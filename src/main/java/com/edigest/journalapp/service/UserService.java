@@ -1,36 +1,38 @@
 package com.edigest.journalapp.service;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import com.edigest.journalapp.entity.User;
+import com.edigest.journalapp.repository.UserRepository;
 
-import com.edigest.journalapp.entity.JournalEntry;
-import com.edigest.journalapp.repository.JournalEntryRepository;;;
-
-@Component
+@Service
 public class UserService {
+
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
-
-    public JournalEntry saveEntry(User user) {
-        return userRepository.save(user);
-
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public List<User> getAll() {
+    // Save or update a user
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    // Get all users
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public JournalEntry findById(ObjectId id) {
-        Optional<User> optionalEntry = userRepository.findById(id);
-        return optionalEntry.orElse(null); // return null if not found
+    // Find a user by username
+    public User findByUserName(String username) {
+        return userRepository.findByUserName(username);
     }
 
-    public void deleteById(ObjectId id) {
-       userRepository.deleteById(id);
+    // Delete user by ID
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
     }
 }
