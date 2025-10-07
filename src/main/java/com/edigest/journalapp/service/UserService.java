@@ -1,60 +1,21 @@
-package com.edigest.journalapp.controller;
+package com.edigest.journalapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+import org.springframework.stereotype.Service;
 import com.edigest.journalapp.entity.User;
-import com.edigest.journalapp.service.UserService;
+import com.edigest.journalapp.repository.UserRepository;
 
-@RestController
-@RequestMapping("/user")
-public class UserController {
-
-    private final UserService userService;
+@Service
+public class UserService {
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    private UserRepository userRepository;
+
+    public User findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
     }
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(users);
-    }
-
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User saved = userService.saveUser(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable String userName) {
-        User userInDb = userService.findByUserName(userName);
-        if (userInDb == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        userInDb.setUserName(user.getUserName());
-        userInDb.setPassword(user.getPassword());
-        userService.saveUser(userInDb);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/{userName}")
-    public ResponseEntity<?> deleteUser(@PathVariable String userName) {
-        User userInDb = userService.findByUserName(userName);
-        if (userInDb == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-        userService.deleteById(userInDb.getId().toString());
-        return ResponseEntity.noContent().build();
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }

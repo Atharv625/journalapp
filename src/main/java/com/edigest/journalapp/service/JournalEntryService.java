@@ -1,7 +1,17 @@
+package com.edigest.journalapp.service;
+
+import com.edigest.journalapp.entity.JournalEntry;
+import com.edigest.journalapp.entity.User;
+import com.edigest.journalapp.repository.JournalEntryRepository;
+
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.edigest.journalapp.entity.User;
+import com.edigest.journalapp.service.UserService;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JournalEntryService {
@@ -30,7 +40,6 @@ public class JournalEntryService {
         // Optionally add to user's journal list if User entity has @DBRef
         if (user.getJournalEntries() != null) {
             user.getJournalEntries().add(saved);
-            user.setUserName(null);
             userService.saveUser(user);
         }
 
